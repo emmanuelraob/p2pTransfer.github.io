@@ -23,24 +23,34 @@ peer.on('connection', function(connection) {
     conn = connection;
     document.getElementById('status').textContent = 'Conexión entrante establecida';
     
-    conn.on('data', function(data) {
-        // Recibir y guardar el archivo
+    // Suponiendo que 'conn' es tu conexión WebRTC
+    conn.onmessage = async function(event) {
+        // Decodificamos el objeto JSON recibido
+        var fileData = JSON.parse(event.data);
         
-        const byteCharacters = atob(data);
+        // Aquí convertimos los datos codificados en base64 de nuevo a un formato binario
+        const byteCharacters = atob(fileData.data);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
             byteNumbers[i] = byteCharacters.charCodeAt(i);
         }
         const byteArray = new Uint8Array(byteNumbers);
         
+        // Crear un Blob con los datos del archivo
         const blob = new Blob([byteArray]);
+        
+        // Crear un enlace y descargar el archivo
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', file.Filename);
+        link.setAttribute('download', fileData.name); // Utilizamos el nombre original del archivo
         document.body.appendChild(link);
         link.click();
-    });
+        
+        // Opcional: Limpieza
+        window.URL.revokeObjectURL(url); // Liberar el objeto URL
+        link.remove(); // Remover el enlace del DOM
+    };
 });
 
 
