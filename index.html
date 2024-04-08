@@ -1,11 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Transferencia P2P</title>
 </head>
+
 <body>
-    <p>hello</p>
+
+    <!-- Para el enviador -->
+    <div id="sender">
+        <input type="file" id="fileInput">
+        <button onclick="prepareFile()">Preparar Archivo</button>
+        <p id="senderStatus">Esperando archivo...</p>
+    </div>
+
+    <!-- Para el receptor -->
+    <div id="receiver">
+        <input type="text" id="fileId" placeholder="ID del archivo">
+        <button onclick="fetchFile()">Recibir Archivo</button>
+        <p id="receiverStatus">Esperando ID...</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.3.2/peerjs.min.js"></script>
+    <script src="app.js"></script>
 </body>
+
 </html>
