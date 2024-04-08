@@ -1,30 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transferencia P2P</title>
+    <title>p2p</title>
 </head>
 
-<body>
-
-    <!-- Para el enviador -->
-    <div id="sender">
-        <input type="file" id="fileInput">
-        <button onclick="prepareFile()">Preparar Archivo</button>
-        <p id="senderStatus">Esperando archivo...</p>
-    </div>
-
-    <!-- Para el receptor -->
-    <div id="receiver">
-        <input type="text" id="fileId" placeholder="ID del archivo">
-        <button onclick="fetchFile()">Recibir Archivo</button>
-        <p id="receiverStatus">Esperando ID...</p>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.3.2/peerjs.min.js"></script>
-    <script src="app.js"></script>
-</body>
-
 </html>
+<body>
+    <h1>Tu ID de PeerJS</h1>
+    <div id="peer-id-display">Generando ID...</div>
+    
+    <input type="text" id="connect-to-peer-id" placeholder="Ingresa la ID del par a conectar">
+    <button id="connect-button">Conectar</button>
+    
+    <div id="status">Sin conexión</div>
+    
+    <!-- Interfaz para seleccionar y enviar archivos -->
+    <input type="file" id="file-input" hidden>
+    <button id="send-file">Seleccionar Archivo</button>
+
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="/js/script.js"></script>
+</body>
