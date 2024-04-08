@@ -55,7 +55,15 @@ document.getElementById('file-input').addEventListener('change', function(event)
         var reader = new FileReader();
         reader.onload = function(e) {
             var data = e.target.result;
-            conn.send(data); // Enviar datos del archivo al par
+            // Crear un objeto que incluya los datos del archivo y el nombre del archivo
+            var fileData = {
+                name: file.name, // Incluye la extensión del archivo
+                data: data
+            };
+            // Convertir el objeto a una cadena JSON
+            var jsonData = JSON.stringify(fileData);
+            // Enviar la cadena JSON
+            conn.send(jsonData);
         };
         reader.readAsArrayBuffer(file);
     }
