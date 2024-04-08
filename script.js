@@ -19,16 +19,25 @@ document.getElementById('connect-button').addEventListener('click', function() {
     }
 });
 
+function arrayBufferToBase64(buffer) {
+    var binary = '';
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+}
+
 peer.on('connection', function(connection) {
     conn = connection;
     document.getElementById('status').textContent = 'Conexión entrante establecida';
-    
-    // Suponiendo que 'conn' es tu conexión WebRTC
-    conn.onmessage = async function(event) {
-        // Decodificamos el objeto JSON recibido
-        var fileData = JSON.parse(event.data);
+
+    conn.on('data', function(jsonData) {
+        var fileData = JSON.parse(jsonData);
+        var fileName = fileData.name; // Correctamente asignado
         
-        // Aquí convertimos los datos codificados en base64 de nuevo a un formato binario
+        // Si enviaste los datos como base64, debes decodificarlos aquí
         const byteCharacters = atob(fileData.data);
         const byteNumbers = new Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
@@ -36,21 +45,14 @@ peer.on('connection', function(connection) {
         }
         const byteArray = new Uint8Array(byteNumbers);
         
-        // Crear un Blob con los datos del archivo
         const blob = new Blob([byteArray]);
-        
-        // Crear un enlace y descargar el archivo
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', fileData.name); // Utilizamos el nombre original del archivo
+        link.setAttribute('download', fileName);
         document.body.appendChild(link);
         link.click();
-        
-        // Opcional: Limpieza
-        window.URL.revokeObjectURL(url); // Liberar el objeto URL
-        link.remove(); // Remover el enlace del DOM
-    };
+    });
 });
 
 
@@ -64,15 +66,12 @@ document.getElementById('file-input').addEventListener('change', function(event)
     if (file && conn) {
         var reader = new FileReader();
         reader.onload = function(e) {
-            var data = e.target.result;
-            // Crear un objeto que incluya los datos del archivo y el nombre del archivo
+            var base64data = arrayBufferToBase64(e.target.result);
             var fileData = {
-                name: file.name, // Incluye la extensión del archivo
-                data: data
+                name: file.name,
+                data: base64data
             };
-            // Convertir el objeto a una cadena JSON
             var jsonData = JSON.stringify(fileData);
-            // Enviar la cadena JSON
             conn.send(jsonData);
         };
         reader.readAsArrayBuffer(file);
