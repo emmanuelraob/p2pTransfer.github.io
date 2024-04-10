@@ -73,6 +73,7 @@ document.getElementById('file-input').addEventListener('change', function(event)
             };
             var jsonData = JSON.stringify(fileData);
             conn.send(jsonData);
+            event.target.value = '';
         };
         reader.readAsArrayBuffer(file);
     }
